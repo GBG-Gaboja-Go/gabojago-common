@@ -34,7 +34,7 @@ public class SwaggerAutoConfig {
 
             public void addCorsMappings(CorsRegistry registry) {
                 registry.addMapping("/**")
-                    .allowedOrigins("*")
+                    .allowedOriginPatterns("*")
                     .allowedMethods("*")
                     .allowedHeaders("*")
                     .allowCredentials(true);
