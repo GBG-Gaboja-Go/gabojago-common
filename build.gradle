@@ -4,14 +4,7 @@ plugins {
 }
 
 group = 'com.gbg'
-version = '1.0-SNAPSHOT'
-
-java {
-    withJavadocJar()
-    withSourcesJar()
-    sourceCompatibility = JavaVersion.VERSION_17
-    targetCompatibility = JavaVersion.VERSION_17
-}
+version = '1.0.1'
 
 repositories {
     mavenCentral()
@@ -31,17 +24,23 @@ dependencies {
     // ✅ 테스트용 (기본 JUnit 유지)
     testImplementation platform('org.junit:junit-bom:5.10.0')
     testImplementation 'org.junit.jupiter:junit-jupiter'
+
+    implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.6.0'
+}
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(17)
+    }
 }
 
-afterEvaluate {
-    publishing {
-        publications {
-            mavenJava (MavenPublication) {
-                from (components.java)
-            }
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            from components.java
         }
     }
 }
+
 
 test {
     useJUnitPlatform()
