@@ -3,6 +3,7 @@ package com.gabojago.swagger.config;
 import io.swagger.v3.oas.annotations.OpenAPIDefinition;
 import io.swagger.v3.oas.annotations.info.Info;
 import io.swagger.v3.oas.models.OpenAPI;
+import io.swagger.v3.oas.models.servers.Server;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.context.annotation.Bean;
 
@@ -20,6 +21,7 @@ public class SwaggerAutoConfig {
     public OpenAPI commonOpenAPI() {
 
         return new OpenAPI()
+            .addServersItem(new Server().url("/"))
             .info(new io.swagger.v3.oas.models.info.Info()
                 .title("GabojaGo API 문서")
                 .version("v1.0")
