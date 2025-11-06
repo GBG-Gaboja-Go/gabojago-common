@@ -7,6 +7,7 @@ import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import org.springframework.http.HttpStatus;
 import org.springframework.validation.BindingResult;
 
 @Getter
@@ -21,17 +22,18 @@ public class BaseResponseDto<T> {
     private T data;        // 성공 시 응답 데이터
     private List<ErrorResponseDto.FieldError> errors; // 실패 시 필드 오류 목록
 
-    public static <T> BaseResponseDto<T> success(String message, T data) {
+    // 201, 204, 203
+    public static <T> BaseResponseDto<T> success(String message, T data, HttpStatus httpStatus) {
         return BaseResponseDto.<T>builder()
-            .status("SUCCESS")
-            .code("200")
+            .status(httpStatus.getReasonPhrase())
+            .code(String.valueOf(httpStatus.value()))
             .message(message)
             .data(data)
             .build();
     }
 
-    public static BaseResponseDto<Void> success(String message) {
-        return success(message, null);
+    public static BaseResponseDto<Void> success(String message, HttpStatus httpStatus) {
+        return success(message, null, httpStatus);
     }
 
     public static BaseResponseDto<Void> error(ErrorCode errorCode) {
