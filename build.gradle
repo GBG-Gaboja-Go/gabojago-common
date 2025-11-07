@@ -4,10 +4,14 @@ plugins {
 }
 
 group = 'com.gbg'
-version = '1.0.9'
+version = '1.0.10'
 
 repositories {
     mavenCentral()
+}
+
+ext {
+    set('querydslVersion', "5.0.0")  // QueryDSL 버전 명시적으로 설정
 }
 
 dependencies {
@@ -25,6 +29,13 @@ dependencies {
     testImplementation platform('org.junit:junit-bom:5.10.0')
     testImplementation 'org.junit.jupiter:junit-jupiter'
 
+    // ✅ querydsl
+    implementation "com.querydsl:querydsl-jpa:${querydslVersion}:jakarta"
+    annotationProcessor "com.querydsl:querydsl-apt:${querydslVersion}:jakarta"
+    annotationProcessor "jakarta.annotation:jakarta.annotation-api:2.1.1"
+    annotationProcessor "jakarta.persistence:jakarta.persistence-api:3.1.0"
+
+    // ✅ swagger annotation
     api 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.6.0'
 }
 java {
@@ -45,3 +56,9 @@ publishing {
 test {
     useJUnitPlatform()
 }
+
+def querydslSrcDir = 'src/main/generated'
+clean {
+    delete file(querydslSrcDir)
+}
+tasks.named('test') { useJUnitPlatform() }
