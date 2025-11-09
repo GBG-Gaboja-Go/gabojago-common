@@ -7,12 +7,14 @@ import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.BindingResult;
 
 @Getter
 @AllArgsConstructor
 @Builder
+@NoArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL) // null인 필드는 Json응답에서 제외, 성공한 요청에는 errors가 필요 없으니 JSON에서 아예 빠지도록 설정
 public class BaseResponseDto<T> {
 
