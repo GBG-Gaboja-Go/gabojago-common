@@ -1,11 +1,15 @@
 package com.gabojago.exception;
 
+import com.gabojago.dto.BaseResponseDto;
+import java.util.Collections;
 import java.util.List;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+@RestControllerAdvice
 public class GlobalExceptionHandler {
 
     /**
@@ -14,10 +18,9 @@ public class GlobalExceptionHandler {
      * @return
      */
     @ExceptionHandler(AppException.class)
-    public ResponseEntity<ErrorResponse> handleBusinessException(AppException appException) {
-
+    public ResponseEntity<BaseResponseDto<ErrorResponse>> handleBusinessException(AppException appException) {
         return ResponseEntity.status(appException.getErrorCode().getStatus())
-            .body(ErrorResponse.from(appException));
+            .body(BaseResponseDto.error(appException.getErrorCode()));
     }
 
     /**
@@ -26,8 +29,8 @@ public class GlobalExceptionHandler {
      * @return
      */
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<ErrorResponse> handleValidationException(MethodArgumentNotValidException appException) {
-        List<ErrorResponse.ErrorField>  errors = appException.getBindingResult()
+    public ResponseEntity<BaseResponseDto<ErrorResponse>> handleValidationException(MethodArgumentNotValidException ex) {
+        List<ErrorResponse.ErrorField> errors = ex.getBindingResult()
             .getFieldErrors()
             .stream()
             .map(f -> new ErrorResponse.ErrorField(f.getField(), f.getDefaultMessage()))
@@ -50,9 +53,17 @@ public class GlobalExceptionHandler {
             }
         };
 
+        ErrorResponse errorResponse = ErrorResponse.of(validationCode, errors);
+
         return ResponseEntity
             .status(validationCode.getStatus())
-            .body(ErrorResponse.of(validationCode, errors));
+            .body(BaseResponseDto.<ErrorResponse>builder()
+                .status("FAIL")
+                .code(validationCode.getCode())
+                .message(validationCode.getMessage())
+                .data(errorResponse)
+                .errors(Collections.emptyList())
+                .build());
     }
 
     /**
@@ -61,7 +72,7 @@ public class GlobalExceptionHandler {
      * @return
      */
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<ErrorResponse> handleGeneralException(Exception e) {
+    public ResponseEntity<BaseResponseDto<ErrorResponse>> handleGeneralException(Exception e) {
         ErrorCode internal = new ErrorCode() {
             @Override
             public String getCode() {
@@ -79,9 +90,17 @@ public class GlobalExceptionHandler {
             }
         };
 
+        ErrorResponse errorResponse = ErrorResponse.from(internal);
+
         return ResponseEntity
             .status(internal.getStatus())
-            .body(ErrorResponse.from(internal));
+            .body(BaseResponseDto.<ErrorResponse>builder()
+                .status("FAIL")
+                .code(internal.getCode())
+                .message(internal.getMessage())
+                .data(errorResponse)
+                .errors(Collections.emptyList())
+                .build());
     }
 
 }

@@ -1,7 +1,10 @@
 package com.gabojago.swagger.config;
 
 import io.swagger.v3.oas.annotations.OpenAPIDefinition;
+import io.swagger.v3.oas.annotations.enums.SecuritySchemeType;
 import io.swagger.v3.oas.annotations.info.Info;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.security.SecurityScheme;
 import io.swagger.v3.oas.models.OpenAPI;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.context.annotation.Bean;
@@ -14,7 +17,14 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
         title = "GabojaGo Common API",
         version = "v1.0",
         description = "공통 Swagger 설정"
-    )
+    ),
+    security = @SecurityRequirement(name = "bearerAuth")
+)
+@SecurityScheme(
+    name = "bearerAuth",
+    type = SecuritySchemeType.HTTP,
+    scheme = "bearer",
+    bearerFormat = "JWT"
 )
 public class SwaggerAutoConfig {
 

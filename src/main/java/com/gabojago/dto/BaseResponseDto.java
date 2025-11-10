@@ -2,6 +2,7 @@ package com.gabojago.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.gabojago.exception.ErrorCode;
+import com.gabojago.exception.ErrorResponse;
 import java.util.Collections;
 import java.util.List;
 import lombok.AllArgsConstructor;
@@ -38,9 +39,9 @@ public class BaseResponseDto<T> {
         return success(message, null, httpStatus);
     }
 
-    public static BaseResponseDto<Void> error(ErrorCode errorCode) {
-        return BaseResponseDto.<Void>builder()
-            .status("FAIL")
+    public static BaseResponseDto<ErrorResponse> error(ErrorCode errorCode) {
+        return BaseResponseDto.<ErrorResponse>builder()
+            .status(errorCode.getStatus().toString())
             .code(errorCode.getCode())
             .message(errorCode.getMessage())
             .errors(Collections.emptyList())
