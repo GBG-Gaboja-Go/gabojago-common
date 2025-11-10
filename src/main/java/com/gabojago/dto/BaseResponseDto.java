@@ -39,13 +39,12 @@ public class BaseResponseDto<T> {
         return success(message, null, httpStatus);
     }
 
-    public static BaseResponseDto<Void> error(ErrorCode errorCode) {
-        return BaseResponseDto.<Void>builder()
-            .status("FAIL")
+    public static <T> BaseResponseDto<T> error(ErrorCode errorCode) {
+        return BaseResponseDto.<T>builder()
+            .status(errorCode.getStatus().toString())
             .code(errorCode.getCode())
             .message(errorCode.getMessage())
             .errors(Collections.emptyList())
-            .data(null)
             .build();
     }
 
