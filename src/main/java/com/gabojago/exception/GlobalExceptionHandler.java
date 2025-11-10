@@ -18,13 +18,13 @@ public class GlobalExceptionHandler {
      * @return
      */
     @ExceptionHandler(AppException.class)
-    public ResponseEntity<BaseResponseDto<Void>> handleBusinessException(AppException appException) {
+    public ResponseEntity<ErrorResponse> handleBusinessException(AppException appException) {
 
         ErrorCode errorCode = appException.getErrorCode();
 
         return ResponseEntity
             .status(errorCode.getStatus())
-            .body(BaseResponseDto.error(errorCode));
+            .body(ErrorResponse.from(appException));
     }
 
     /**
